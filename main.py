@@ -19,7 +19,7 @@ def check_int(s):
 
 
 def getMap(top, sc='0.005'):
-    d = False
+    d = True
     if not sc:
         sc = '0.005'
     try:
@@ -83,8 +83,7 @@ class MainWindow(QMainWindow):
 
     def click(self):
         res = getMap(self.lineEdit.text(), self.lineEdit_2.text())
-        if res:
-            self.changeMap(res)
+        self.changeMap(res)
 
 
 if __name__ == '__main__':
