@@ -58,12 +58,12 @@
      <rect>
       <x>30</x>
       <y>470</y>
-      <width>47</width>
-      <height>13</height>
+      <width>181</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Адрес:</string>
+     <string>Адрес/координаты:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
@@ -76,20 +76,58 @@
      </rect>
     </property>
     <property name="text">
-     <string>Масштаб</string>
+     <string>Масштаб:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="button">
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>480</y>
+      <y>490</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Карта</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>490</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Схема</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Спутник</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Гибрид</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>470</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Тип карты:</string>
     </property>
    </widget>
   </widget>

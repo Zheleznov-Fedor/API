@@ -6,10 +6,10 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow
 from scale import scale
-from io import BytesIO
 
 geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
 map_api_server = "http://static-maps.yandex.ru/1.x/"
+map_type = 'map'
 
 
 def check_int(s):
@@ -43,7 +43,6 @@ def getMap(top, sc='0.005'):
             "format": "json"}
 
         response = requests.get(geocoder_api_server, params=geocoder_params)
-        print(response.json())
         json_response = response.json()
         try:
             toponym = json_response["response"]["GeoObjectCollection"][
@@ -53,20 +52,19 @@ def getMap(top, sc='0.005'):
         toponym_longitude, toponym_lattitude = scale(toponym)
     else:
         toponym_longitude, toponym_lattitude = str(n1), str(n2)
-        print(toponym_longitude, toponym_lattitude)
     delta = [str(sc), str(sc)]
 
     map_params = {
         "ll": ",".join([toponym_longitude, toponym_lattitude]),
         "spn": ",".join(delta),
-        "l": "map",
+        "l": map_type,
         'pt': ",".join([toponym_longitude, toponym_lattitude, 'round']),  # параметр, отвечающий за точку на карте
     }
 
     response = requests.get(map_api_server, params=map_params)
-    bytes = response.content
+    Im_bytes = response.content
 
-    return bytes
+    return Im_bytes
 
 
 class MainWindow(QMainWindow):
@@ -74,12 +72,23 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi('untitled.ui', self)
         self.button.clicked.connect(self.click)
+        self.comboBox.currentTextChanged.connect(self.combo)
+
+    def combo(self, val):
+        global map_type
+        if val == 'Схема':
+            map_type = 'map'
+        elif val == 'Спутник':
+            map_type = 'sat'
+        elif val == 'Гибрид':
+            map_type = 'sat,skl'
 
     def changeMap(self, b):
-        f = open('map.png', 'wb')
-        f.write(b)
-        f.close()
-        self.label.setPixmap(QPixmap('map.png'))
+        if b:
+            f = open('map.png', 'wb')
+            f.write(b)
+            f.close()
+            self.label.setPixmap(QPixmap('map.png'))
 
     def click(self):
         res = getMap(self.lineEdit.text(), self.lineEdit_2.text())
