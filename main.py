@@ -1,7 +1,7 @@
 import sys
 
 import requests
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow
@@ -18,10 +18,17 @@ def check_int(s):
     return s.isdigit()
 
 
-def getMap(top, sc='0.005'):
+def getMap(top, sc='50'):
     d = True
     if not sc:
-        sc = '0.005'
+        sc = '50'
+    sc = int(sc)
+    if sc > 900000:
+        sc = 900000
+    if sc < 1:
+        sc = 1
+    sc /= 10000
+    sc = str(sc)
     try:
         n1 = top.split()[0]
         n2 = top.split()[1]
@@ -58,7 +65,7 @@ def getMap(top, sc='0.005'):
         "ll": ",".join([toponym_longitude, toponym_lattitude]),
         "spn": ",".join(delta),
         "l": map_type,
-        'pt': ",".join([toponym_longitude, toponym_lattitude, 'round']),  # параметр, отвечающий за точку на карте
+        "pt": ",".join([toponym_longitude, toponym_lattitude, 'round']),  # параметр, отвечающий за точку на карте
     }
 
     response = requests.get(map_api_server, params=map_params)
@@ -93,6 +100,35 @@ class MainWindow(QMainWindow):
     def click(self):
         res = getMap(self.lineEdit.text(), self.lineEdit_2.text())
         self.changeMap(res)
+
+    def keyPressEvent(self, event):  # обработка клавиш
+        if event.key() == QtCore.Qt.Key_PageUp:  # увеличение/уменьшение масштаба
+            text = self.lineEdit_2.text()
+            if text is None:
+                text = 1
+            else:
+                text = int(text)
+                text *= 2
+                if text > 900000:
+                    text = 900000
+                text = str(text)
+            self.lineEdit_2.setText(text)
+            self.click()
+        if event.key() == QtCore.Qt.Key_PageDown:
+            text = self.lineEdit_2.text()
+            if text is None:
+                text = 1
+            else:
+                text = int(text)
+                text /= 2
+                if text < 1:
+                    text = 1
+                text = str(text)
+            self.lineEdit_2.setText(text)
+            self.click()
+        if event.key() == QtCore.Qt.Key_Enter:  # должно создавать карту при нажатии на enter, но у меня не заработало
+            self.click()
+        event.accept()
 
 
 if __name__ == '__main__':
